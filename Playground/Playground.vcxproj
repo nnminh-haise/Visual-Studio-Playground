@@ -131,15 +131,21 @@
   <ItemGroup>
     <ClCompile Include="BinarySearchTree.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
+    <ClCompile Include="LinearList.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Playground.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Student.cpp" />
+    <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="IndexGenerator.h" />
+    <ClInclude Include="LinearList.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Student.h" />
+    <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
