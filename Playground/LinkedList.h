@@ -8,6 +8,8 @@ class DynamicArray
 public:
 	DynamicArray();
 
+	~DynamicArray();
+
 	bool Empty();
 
 	int Size();
@@ -45,6 +47,26 @@ inline DynamicArray<T>::DynamicArray()
 {
 	this->first_ = nullptr;
 	this->last_ = nullptr;
+}
+
+template<typename T>
+inline DynamicArray<T>::~DynamicArray()
+{
+	if (this->Empty())
+	{
+		delete this->first_;
+		delete this->last_;
+		return;
+	}
+
+	for (Pointer currentNode = this->first_; currentNode != nullptr;)
+	{
+		Pointer deleteNode = currentNode;
+		currentNode = currentNode->next_;
+		delete deleteNode;
+	}
+	delete this->first_;
+	delete this->last_;
 }
 
 template<typename T>
