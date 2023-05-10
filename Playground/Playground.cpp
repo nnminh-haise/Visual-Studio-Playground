@@ -3,6 +3,7 @@
 #include "IndexGenerator.h"
 #include "Date.h"
 #include "HashMap.h"
+#include "LinkedList.h"
 #include <fstream>
 #include <ctime>
 #include <random>
@@ -57,17 +58,17 @@
 int main() {
 	srand(time(NULL));
 
-	HashMap < int > intMap (456976, 0);
 
-	try {
-		intMap.Insert("ZZZZ", 100);
-	}
-	catch (const std::exception& ex) {
-		std::cout << ex.what();
-	}
+	//HashMap < int > intMap (456976, 0);
 
-	std::cout << intMap["ZZZZ"] << "\n";
+	//try {
+	//	intMap.Insert("ZZZZ", 100);
+	//}
+	//catch (const std::exception& ex) {
+	//	std::cout << ex.what();
+	//}
 
+	//std::cout << intMap["ZZZZ"] << "\n";
 
 	//-----------------------------------------------------------
 
