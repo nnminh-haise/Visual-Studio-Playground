@@ -32,7 +32,11 @@ public:
 
 	T PopAt(int position = 0);
 
-public:
+	T& operator[](int index);
+
+	T At(int index);
+
+private:
 	int MAX_SIZE = 100000;
 
 private:
@@ -44,6 +48,7 @@ template<typename T>
 inline LinearList<T>::LinearList()
 {
 	this->nodes_ = new T [this->MAX_SIZE];
+	this->nodeCount_ = 0;
 }
 
 template<typename T>
@@ -73,7 +78,7 @@ inline bool LinearList<T>::Full() const
 template<typename T>
 inline void LinearList<T>::Clear() noexcept
 {
-	std::destroy(this->nodes_, this->nodes_ + this->nodesCount_);
+	std::destroy(this->nodes_, this->nodes_ + this->nodeCount_);
 	this->nodeCount_ = 0;
 }
 
@@ -195,4 +200,40 @@ inline T LinearList<T>::PopAt(int position)
 		this->nodes_[i] = this->nodes_[i + 1];
 	}
 	return returnValue;
+}
+
+template<typename T>
+inline T& LinearList<T>::operator[](int index)
+{
+	if (this->Empty())
+	{
+		throw std::logic_error("[ERROR] EMPTY LIST\n");
+		exit(1);
+	}
+
+	if (index < 0 || index >= this->nodeCount_)
+	{
+		throw std::logic_error("[ERROR] INDEX OUT OF RANGE\n");
+		exit(1);
+	}
+
+	return this->nodes_[index];
+}
+
+template<typename T>
+inline T LinearList<T>::At(int index)
+{
+	if (this->Empty())
+	{
+		throw std::logic_error("[ERROR] EMPTY LIST\n");
+		exit(1);
+	}
+
+	if (index < 0 || index >= this->nodeCount_)
+	{
+		throw std::logic_error("[ERROR] INDEX OUT OF RANGE\n");
+		exit(1);
+	}
+
+	return this->nodes_[index];
 }
