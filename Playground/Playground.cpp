@@ -32,31 +32,40 @@ struct Data {
 	}
 };
 
+void InOrderTraversal(AVL_Tree<int>::Node* node)
+{
+	if (node != nullptr)
+	{
+		InOrderTraversal(node->left_);
+		std::cout << node->key_ << " ";
+		InOrderTraversal(node->right_);
+	}
+}
+
 int main() {
 	srand(time(NULL));
 
-	DoubleLinkedList<int> list;
-	
-	list.PushBack(10);
-	list.PushBack(11);
-	list.PushBack(12);
-	list.PushBack(13);
-	list.PushBack(14);
+	AVL_Tree<int, int> tree;
 
-	int listSize = list.Size();
-
-	std::cout << "size = " << listSize << "\n";
-
-	for (int i = 0; i < listSize; ++i)
+	int vals[10]{};
+	int keys[10]{};
+	for (int i = 0; i < 10; ++i)
 	{
-		std::cout << list[i] << " ";
+		vals[i] = rand() % 100 + 1;
+		keys[i] = rand() % 1000 + 1;
+		std::cout << "Inserting node with key = " << keys[i] << ", val = " << vals[i] << "\n";
+		tree.Insert(keys[i], vals[i]);
 	}
+
+	InOrderTraversal(tree.GetRoot());
 	std::cout << "\n";
 
-	for (auto currentNode = list.NodeAt(0); currentNode != nullptr; currentNode = currentNode->right_)
-	{
-		std::cout << currentNode->info_ << " ";
-	}
+	tree.Remove(keys[2]);
+
+	std::cout << "deleteing key = " << keys[2] << "\n";
+	std::cout << "root key = " << tree.GetRoot()->key_ << "\n";
+
+	InOrderTraversal(tree.GetRoot());
 	std::cout << "\n";
 
 	return 0;

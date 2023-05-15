@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-template <typename T>
+template<typename T>
 class DynamicArray
 {
 public:
@@ -22,12 +22,12 @@ public:
 
 	T PopBack();
 
-	T& operator[] (const int& index);
+	T& operator[] (int index);
 
-	T At(const int& index);
+	T At(int index);
 
 private:
-	struct Node 
+	struct Node
 	{
 		Node(T value, Node* next);
 
@@ -43,6 +43,13 @@ private:
 };
 
 template<typename T>
+inline DynamicArray<T>::Node::Node(T value, Node* next)
+{
+	this->info_ = value;
+	this->next_ = next;
+}
+
+template<typename T>
 inline DynamicArray<T>::DynamicArray()
 {
 	this->first_ = nullptr;
@@ -52,21 +59,12 @@ inline DynamicArray<T>::DynamicArray()
 template<typename T>
 inline DynamicArray<T>::~DynamicArray()
 {
-	if (this->Empty())
-	{
-		delete this->first_;
-		delete this->last_;
-		return;
-	}
-
 	for (Pointer currentNode = this->first_; currentNode != nullptr;)
 	{
 		Pointer deleteNode = currentNode;
 		currentNode = currentNode->next_;
 		delete deleteNode;
 	}
-	delete this->first_;
-	delete this->last_;
 }
 
 template<typename T>
@@ -136,7 +134,7 @@ inline T DynamicArray<T>::PopBack()
 }
 
 template<typename T>
-inline T& DynamicArray<T>::operator[](const int& index)
+inline T& DynamicArray<T>::operator[](int index)
 {
 	if (this->Empty())
 	{
@@ -156,10 +154,12 @@ inline T& DynamicArray<T>::operator[](const int& index)
 			return p->info_;
 		}
 	}
+
+	throw std::logic_error("[ERROR] CANNOT ACCESS ANY VALUE! UNKNOWN ERROR!\n");
 }
 
 template<typename T>
-inline T DynamicArray<T>::At(const int& index)
+inline T DynamicArray<T>::At(int index)
 {
 	if (this->Empty())
 	{
@@ -179,11 +179,4 @@ inline T DynamicArray<T>::At(const int& index)
 			return p->info_;
 		}
 	}
-}
-
-template<typename T>
-inline DynamicArray<T>::Node::Node(T value, Node* next)
-{
-	this->info_ = value;
-	this->next_ = next;
 }
