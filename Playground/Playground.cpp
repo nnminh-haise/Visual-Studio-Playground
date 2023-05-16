@@ -1,56 +1,42 @@
-#include <fstream>
-#include "Student.h"
-#include "Date.h"
-#include "DataStructures/HashMap.h"
-#include "DataStructures/DynamicArray.h"
+#include <iostream>
 #include "DataStructures/LinearList.h"
-#include "DataStructures/LinkedList.h"
-#include "DataStructures/Stack.h"
 #include "DataStructures/AVL_Tree.h"
 #include "DataStructures/DoubleLinkedList.h"
-#include <ctime>
-#include <random>
-#include <format>
+#include "DataStructures/LinkedList.h"
+#include "DataStructures/Stack.h"
 
-struct Data {
-	int a_;
-	int b_;
-
-	Data() : a_(0), b_(0) {}
-
-	Data(int a, int b) : a_(a), b_(b) {}
-
-	friend std::ostream& operator<< (std::ostream& os, const Data& data)
-	{
-		os << std::format("({}, {})", data.a_, data.b_);
-		return os;
-	}
-};
+#define TESTING_TYPE Stack<int>
 
 struct Object {
-	DoubleLinkedList<Data> lst_;
+	TESTING_TYPE list_;
 };
 
 int main()
 {
-	srand(time(NULL));
-
 	Object obj;
 
 	{
-		DoubleLinkedList<Data> list;
+		TESTING_TYPE list;
 		for (int i = 0; i < 10; ++i)
 		{
-			list.PushBack(Data(i + 1, rand() % 100 + 1));
+			list.Push(i + 1);
 		}
-		obj.lst_ = list;
+		obj.list_ = list;
 	}
 
-	for (auto p = obj.lst_.Begin(); p != nullptr; p = p->right_)
+	obj.list_.Print();
+
+	TESTING_TYPE ls1;
+	for (int i = 20; i <= 40; ++i)
 	{
-		std::cout << p->info_ << "; ";
+		ls1.Push(i);
 	}
-	std::cout << "\b\b\n";
+
+	ls1.Print();
+
+	TESTING_TYPE ls2 = ls1;
+
+	ls2.Print();
 
 	return 0;
 }

@@ -23,6 +23,8 @@ public:
 public:
 	DoubleLinkedList();
 
+	DoubleLinkedList(const DoubleLinkedList<T>& other);
+
 	~DoubleLinkedList();
 
 	bool Empty() const;
@@ -62,6 +64,42 @@ DoubleLinkedList<T>::DoubleLinkedList()
 {
 	this->first_ = this->last_ = nullptr;
 	this->size_ = 0;
+}
+
+template<typename T>
+inline DoubleLinkedList<T>::DoubleLinkedList(const DoubleLinkedList<T>& other)
+{
+	if (this != &other)
+	{
+		// Clear the current list
+		this->~DoubleLinkedList();
+
+		// Copy the size
+		this->size_ = other.size_;
+
+		// Copy the nodes
+		DoubleLinkedList<T>::Node* current = other.first_;
+		DoubleLinkedList<T>::Node* prev = nullptr;
+		while (current != nullptr)
+		{
+			DoubleLinkedList<T>::Node* newNode = new DoubleLinkedList<T>::Node(current->info_, prev, nullptr);
+
+			if (prev != nullptr)
+			{
+				prev->right_ = newNode;
+			}
+			else
+			{
+				this->first_ = newNode;
+			}
+
+			prev = newNode;
+			current = current->right_;
+		}
+
+		// Update the last node
+		this->last_ = prev;
+	}
 }
 
 template<typename T>

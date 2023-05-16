@@ -4,7 +4,7 @@
 #include "LinearList.h"
 #include <iostream>
 
-template<typename VALUE_TYPE, typename KEY_TYPE = int>
+template<typename VALUE_TYPE, typename KEY_TYPE>
 class AVL_Tree
 {
 public:
@@ -25,6 +25,14 @@ public:
 public:
 	AVL_Tree();
 
+    AVL_Tree(const AVL_Tree<VALUE_TYPE, KEY_TYPE>& other);
+
+    ~AVL_Tree();
+
+    AVL_Tree<VALUE_TYPE, KEY_TYPE>& operator=(const AVL_Tree<VALUE_TYPE, KEY_TYPE>& other);
+
+    Node& operator[] (KEY_TYPE key);
+
 	bool Empty() const;
 
 	int Size();
@@ -35,15 +43,17 @@ public:
 
 	Node* Search(KEY_TYPE key);
 
-    Node& operator[] (KEY_TYPE key);
-
     Node At(KEY_TYPE key);
 
     Node* GetRoot();
 
-    void CastToLinearList(LinearList<Node*>& list);
+    void CastToLinearList(LinearList<Node*>& list) const;
+
+    void InOrderPrint();
 
 private:
+    void RecursiveDestructor(Node* node);
+
 	void InOrderTraversal(Node* root);
 
 	void NonrecursiveInOrderTraversal();
@@ -67,6 +77,99 @@ private:
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
 inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::AVL_Tree() : root_(nullptr), size_(0) {}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline AVL_Tree<VALUE_TYPE, KEY_TYPE>& AVL_Tree<VALUE_TYPE, KEY_TYPE>::operator=(const AVL_Tree<VALUE_TYPE, KEY_TYPE>& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    this->~AVL_Tree();
+
+    this->root_ = nullptr;
+    this->size_ = 0;
+    LinearList<Node*> nodeList;
+    other.CastToLinearList(nodeList);
+    for (int i = 0; i < nodeList.Size(); i++)
+    {
+        Node* currentNode = nodeList[i];
+        this->Insert(currentNode->key_, currentNode->info_);
+    }
+
+    return *this;
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::~AVL_Tree()
+{
+    if (this->Empty())
+    {
+        return;
+    }
+
+    this->RecursiveDestructor(this->root_);
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::AVL_Tree(const AVL_Tree<VALUE_TYPE, KEY_TYPE>& other)
+{
+    if (this != &other)
+    {
+        this->~AVL_Tree();
+
+        this->root_ = nullptr;
+        this->size_ = 0;
+        LinearList<Node*> nodeList;
+        other.CastToLinearList(nodeList);
+        for (int i = 0; i < nodeList.Size(); i++)
+        {
+            Node* currentNode = nodeList[i];
+            this->Insert(currentNode->key_, currentNode->info_);
+        }
+    }
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node& AVL_Tree<VALUE_TYPE, KEY_TYPE>::operator[](KEY_TYPE key)
+{
+    if (this->Empty())
+    {
+        throw std::logic_error("[ERROR] EMPTY TREE!");
+    }
+
+    Stack<AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*> stk;
+    AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* currentNode = this->root_;
+    while (true)
+    {
+        while (currentNode != nullptr)
+        {
+            stk.Push(currentNode);
+            currentNode = currentNode->left_;
+        }
+
+        if (stk.Empty() == false)
+        {
+            currentNode = stk.Pop();
+            // NODE MANIPULATION LOGIC PERFORM HERE ------
+
+            if (currentNode->key_ == key)
+            {
+                return *currentNode;
+            }
+
+            //--------------------------------------------
+            currentNode = currentNode->right_;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    throw std::logic_error("[ERROR] KEY NOT EXIST IN TREE!\n");
+}
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
 inline bool AVL_Tree<VALUE_TYPE, KEY_TYPE>::Empty() const
@@ -134,46 +237,6 @@ inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* AVL_Tree<VALUE_TYPE, KEY_TYPE>::Sea
 }
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
-inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node& AVL_Tree<VALUE_TYPE, KEY_TYPE>::operator[](KEY_TYPE key)
-{
-    if (this->Empty())
-    {
-        throw std::logic_error("[ERROR] EMPTY TREE!");
-    }
-
-    Stack<AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*> stk;
-    AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* currentNode = this->root_;
-    while (true)
-    {
-        while (currentNode != nullptr)
-        {
-            stk.Push(currentNode);
-            currentNode = currentNode->left_;
-        }
-
-        if (stk.Empty() == false)
-        {
-            currentNode = stk.Pop();
-            // NODE MANIPULATION LOGIC PERFORM HERE ------
-
-            if (currentNode->key_ == key)
-            {
-                return *currentNode;
-            }
-
-            //--------------------------------------------
-            currentNode = currentNode->right_;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    throw std::logic_error("[ERROR] KEY NOT EXIST IN TREE!\n");
-}
-
-template<typename VALUE_TYPE, typename KEY_TYPE>
 inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node AVL_Tree<VALUE_TYPE, KEY_TYPE>::At(KEY_TYPE key)
 {
     if (this->Empty())
@@ -220,7 +283,7 @@ inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* AVL_Tree<VALUE_TYPE, KEY_TYPE>::Get
 }
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
-inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::CastToLinearList(LinearList<AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*>& list)
+inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::CastToLinearList(LinearList<AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*>& list) const
 {
     try {
         Stack <AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*> stk;
@@ -253,6 +316,24 @@ inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::CastToLinearList(LinearList<AVL_Tree
 }
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
+inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::InOrderPrint()
+{
+    InOrderTraversal(this->root_);
+    std::cout << "\b\n";
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::RecursiveDestructor(AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* node)
+{
+    if (node != nullptr)
+    {
+        RecursiveDestructor(node->left_);
+        RecursiveDestructor(node->right_);
+        delete node;
+    }
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
 inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::InOrderTraversal(AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* root)
 {
 	if (root != nullptr)
@@ -260,7 +341,7 @@ inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::InOrderTraversal(AVL_Tree<VALUE_TYPE
 		this->InOrderTraversal(root->left_);
 		// Do the work here!
 
-        std::cout << root->info_ << " ";
+        std::cout << root->key_ << " ";
 
 		// -----------------
 		this->InOrderTraversal(root->right_);
