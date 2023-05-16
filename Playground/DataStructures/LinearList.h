@@ -66,7 +66,7 @@ inline LinearList<T>::LinearList(int size)
 template<typename T>
 inline LinearList<T>::~LinearList()
 {
-	delete[] this->nodes_;
+	//delete[] this->nodes_;
 }
 
 template<typename T>

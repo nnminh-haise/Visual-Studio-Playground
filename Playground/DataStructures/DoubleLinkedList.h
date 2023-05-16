@@ -31,6 +31,8 @@ public:
 
 	Node& operator[] (int index);
 
+	DoubleLinkedList<T>& operator=(const DoubleLinkedList<T>& other);
+
 	Node* NodeAt(int index);
 
 	Node* Begin();
@@ -97,6 +99,46 @@ inline DoubleLinkedList<T>::Node& DoubleLinkedList<T>::operator[](int index)
 	DoubleLinkedList<T>::Node* target = this->first_;
 	for (int i = 0; i != index && target != nullptr; target = target->right_, i++);
 	return *target;
+}
+
+template<typename T>
+inline DoubleLinkedList<T>& DoubleLinkedList<T>::operator=(const DoubleLinkedList<T>& other)
+{
+	if (this == &other)
+	{
+		return *this;
+	}
+
+	// Clear the current list
+	this->~DoubleLinkedList();
+
+	// Copy the size
+	this->size_ = other.size_;
+
+	// Copy the nodes
+	DoubleLinkedList<T>::Node* current = other.first_;
+	DoubleLinkedList<T>::Node* prev = nullptr;
+	while (current != nullptr)
+	{
+		DoubleLinkedList<T>::Node* newNode = new DoubleLinkedList<T>::Node(current->info_, prev, nullptr);
+
+		if (prev != nullptr)
+		{
+			prev->right_ = newNode;
+		}
+		else
+		{
+			this->first_ = newNode;
+		}
+
+		prev = newNode;
+		current = current->right_;
+	}
+
+	// Update the last node
+	this->last_ = prev;
+
+	return *this;
 }
 
 template<typename T>
