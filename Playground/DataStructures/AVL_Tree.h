@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Stack.h"
+#include "LinearList.h"
 #include <iostream>
 
 template<typename VALUE_TYPE, typename KEY_TYPE = int>
@@ -9,8 +10,9 @@ class AVL_Tree
 public:
 	struct Node
 	{
-		Node(KEY_TYPE key, VALUE_TYPE info, Node* left, Node* right) :
-			key_(key), info_(info), left_(left), right_(right), balanceFactor_(0), height_(0) {}
+        Node() : key_(KEY_TYPE()), info_(VALUE_TYPE()), left_(nullptr), right_(nullptr), balanceFactor_(0), height_(1) {}
+
+		Node(KEY_TYPE key, VALUE_TYPE info, Node* left, Node* right) : key_(key), info_(info), left_(left), right_(right), balanceFactor_(0), height_(0) {}
 
 		KEY_TYPE key_;
 		VALUE_TYPE info_;
@@ -38,6 +40,8 @@ public:
     Node At(KEY_TYPE key);
 
     Node* GetRoot();
+
+    void CastToLinearList(LinearList<Node*>& list);
 
 private:
 	void InOrderTraversal(Node* root);
@@ -85,6 +89,7 @@ inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::Remove(KEY_TYPE key)
     catch (const std::exception& ex) {
         std::cerr << ex.what();
     }
+    this->size_ -= 1;
 }
 
 template<typename VALUE_TYPE, typename KEY_TYPE>
@@ -92,6 +97,7 @@ inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::Insert(KEY_TYPE key, VALUE_TYPE info
 {
 	if (this->root_ == nullptr)
 	{
+        this->size_ += 1;
 		this->root_ = new AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node(key, info, nullptr, nullptr);
 	}
 	else
@@ -104,6 +110,8 @@ inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::Insert(KEY_TYPE key, VALUE_TYPE info
 		{
 			std::cerr << ex.what();
 		}
+
+        this->size_ += 1;
 	}
 }
 
@@ -209,6 +217,39 @@ template<typename VALUE_TYPE, typename KEY_TYPE>
 inline AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* AVL_Tree<VALUE_TYPE, KEY_TYPE>::GetRoot()
 {
     return this->root_;
+}
+
+template<typename VALUE_TYPE, typename KEY_TYPE>
+inline void AVL_Tree<VALUE_TYPE, KEY_TYPE>::CastToLinearList(LinearList<AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*>& list)
+{
+    try {
+        Stack <AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node*> stk;
+        AVL_Tree<VALUE_TYPE, KEY_TYPE>::Node* p = this->root_;
+        while (true)
+        {
+            while (p != nullptr)
+            {
+                stk.Push(p);
+                p = p->left_;
+            }
+
+            if (stk.Empty() == false)
+            {
+                p = stk.Pop();
+                // NODE MANIPULATION LOGIC PERFORM HERE ------
+                list.PushBack(p);
+                //--------------------------------------------
+                p = p->right_;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    catch (std::exception& ex) {
+        std::cout << ex.what() << "\n";
+    }
 }
 
 template<typename VALUE_TYPE, typename KEY_TYPE>

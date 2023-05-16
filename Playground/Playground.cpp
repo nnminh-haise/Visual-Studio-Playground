@@ -57,6 +57,7 @@ int main() {
 		tree.Insert(keys[i], vals[i]);
 	}
 
+	std::cout << "tree: ";
 	InOrderTraversal(tree.GetRoot());
 	std::cout << "\n";
 
@@ -65,8 +66,28 @@ int main() {
 	std::cout << "deleteing key = " << keys[2] << "\n";
 	std::cout << "root key = " << tree.GetRoot()->key_ << "\n";
 
+	std::cout << "tree after delete: ";
 	InOrderTraversal(tree.GetRoot());
 	std::cout << "\n";
+
+	std::cout << "search for key[4]: " << tree.Search(keys[4])->key_ << "\n";
+	try {
+		std::cout << "bug: " << tree[keys[2]].key_ << "\n";
+	}
+	catch (const std::exception& ex) {
+		std::cout << ex.what() << "\n";
+	}
+	//std::cout << "search for key[2]: " << tree.Search(keys[2])->info_ << "\n";
+
+	std::cout << "tree size: " << tree.Size() << "\n";
+	LinearList<AVL_Tree<int, int>::Node*> ptrArr(tree.Size());
+	tree.CastToLinearList(ptrArr);
+	int sz = ptrArr.Size();
+	for (int i = 0; i < sz; ++i)
+	{
+		std::cout << ptrArr[i]->key_ << " ";
+	}
+	std::cout << "\b\n";
 
 	return 0;
 }
