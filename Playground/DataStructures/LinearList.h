@@ -22,8 +22,6 @@ public:
 
 	int Capacity() const;
 
-	int MaxSize() const;
-
 	bool Empty() const;
 
 	bool Full() const;
@@ -123,12 +121,6 @@ template<typename T>
 inline int LinearList<T>::Capacity() const
 {
 	return this->capacity_;
-}
-
-template<typename T>
-inline int LinearList<T>::MaxSize() const
-{
-	return this->MAX_SIZE;
 }
 
 template<typename T>
