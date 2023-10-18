@@ -18,18 +18,18 @@
     <ClCompile Include="Playground.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Student.cpp">
+    <ClCompile Include="Objects\Student.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Date.cpp">
+    <ClCompile Include="Helper\Date.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\DataTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Date.h">
+    <ClInclude Include="Objects\Student.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DataStructures\HashMap.h">
@@ -50,5 +50,20 @@
     <ClInclude Include="DataStructures\Stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Functions\rndlib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\Date.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\DataTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="query.sql" />
   </ItemGroup>
 </Project>

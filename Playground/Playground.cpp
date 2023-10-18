@@ -1,126 +1,95 @@
 #include <iostream>
-#include "DataStructures/LinearList.h"
-#include "DataStructures/AVL_Tree.h"
-#include "DataStructures/DoubleLinkedList.h"
-#include "DataStructures/LinkedList.h"
-#include "DataStructures/Stack.h"
+#include <string>
+#include <format>
+#include <fstream>
+#include "Functions/rndlib.hpp"
+#include "Helper/Helper.h"
 
-#define TESTING_TYPE IntLinearList<int>
+struct Record {
+	std::string makh;
+	std::string cmnd;
+	std::string ho;
+	std::string ten;
+	Sex gioitinh = MALE;
+	Date ngaysinh;
+	std::string diachi;
+	std::string sdt;
+	std::string email;
+	std::string masothue;
 
-template<typename T>
-class IntLinearList : public LinearList<T>
-{
-public:
-	IntLinearList();
+	Record() {}
 
-	IntLinearList(int capacity);
+	void setTableName(std::string name) {
+		this->tableName = name;
+	}
 
-	IntLinearList(const IntLinearList<T>& other);
+	std::string getTableName() {
+		return this->tableName;
+	}
 
-	~IntLinearList();
+	static std::string surroundBySingleQuote(std::string target) {
+		return std::format("'{}'", target);
+	}
 
-	IntLinearList<T>& operator=(const IntLinearList<T>& other);
+	std::string toString() {
+		return "(" +
+			surroundBySingleQuote(makh) + ", " +
+			surroundBySingleQuote(cmnd) + ", " +
+			"N" + surroundBySingleQuote(ho) + ", " +
+			"N" + surroundBySingleQuote(ten) + ", " +
+			"N" + surroundBySingleQuote(gioitinh.toString()) + ", " +
+			surroundBySingleQuote(ngaysinh.toString()) + ", " +
+			surroundBySingleQuote(diachi) + ", " +
+			surroundBySingleQuote(sdt) + ", " +
+			surroundBySingleQuote(email) + ", " +
+			surroundBySingleQuote(masothue) + ")";
+	}
 
-	void PushOrder(const T& value);
+private:
+	std::string tableName;
 };
 
-template<typename T>
-IntLinearList<T>::IntLinearList() : LinearList<T>() {}
+Record generate() {
+	Record record;
 
-template<typename T>
-IntLinearList<T>::IntLinearList(int capacity) : LinearList<T>(capacity) {}
+	record.makh = "KH" + Random::String(8, "1234567890");
+	record.cmnd = Random::String(10, "1234567890");
+	record.ho = lastNames[Random::integer(0, (int)lastNames.size() - 1)] + " " +
+				middleNames[Random::integer(0, (int)middleNames.size() - 1)];
+	record.ten = firstNames[Random::integer(0, (int)firstNames.size() - 1)];
+	record.gioitinh.setSex(Random::integer(0, 1));
+	record.ngaysinh = Date::randomDate();
+	record.ngaysinh.setFormat(Date::Format::YYYYMMDD);
+	record.diachi = " ";
+	record.sdt = Random::String(10, "1234567890");
+	record.email = Random::String(10, "qwertyuiopasdfghjklzxcvbnm1234567890") + "@gamil.com";
+	record.masothue = Random::String(10, "1234567890");
 
-template<typename T>
-IntLinearList<T>::IntLinearList(const IntLinearList<T>& other) : LinearList<T>(other) {}
-
-template<typename T>
-IntLinearList<T>::~IntLinearList() {}
-
-template<typename T>
-IntLinearList<T>& IntLinearList<T>::operator=(const IntLinearList<T>& other)
-{
-	if (this == &other)
-	{
-		return *this;
-	}
-
-	LinearList<T>::operator=(other);
-	return *this;
+	return record;
 }
 
-template<typename T>
-void IntLinearList<T>::PushOrder(const T& value)
-{
-	int index = 0;
-	for (; index < this->Size(); ++index)
-	{
-		if (this->operator[](index) > value)
-		{
-			break;
-		}
+void globalSetup();
+
+int main() {
+	globalSetup();
+
+	std::ofstream fileOut("query.sql");
+
+	Record record;
+	record.setTableName("KHACHHANG");
+
+	int rep = 20;
+	std::string query{};
+	while (rep--) {
+		query = std::format("INSERT INTO {}", record.getTableName());
+		fileOut << query << std::endl;
+		Record record = generate();
+		fileOut << "Values " + record.toString() << std::endl;
 	}
-	this->PushAt(value, index);
-}
-
-
-struct Object {
-	IntLinearList<int> list_;
-};
-
-int main()
-{
-	Object obj;
-
-	{
-		TESTING_TYPE list;
-		for (int i = 0; i < 10; ++i)
-		{
-			list.PushBack(i + 1);
-		}
-		obj.list_ = list;
-	}
-
-	for (int i = 0; i < obj.list_.Size(); ++i) std::cout << obj.list_[i] << " "; std::cout << "\b\n";
-
-	TESTING_TYPE ls1;
-	for (int i = 20; i <= 40; ++i)
-	{
-		ls1.PushBack(i);
-	}
-
-	for (int i = 0; i < ls1.Size(); ++i) std::cout << ls1[i] << " "; std::cout << "\b\n";
-
-	TESTING_TYPE ls2 = ls1;
-
-	for (int i = 0; i < ls2.Size(); ++i) std::cout << ls2[i] << " "; std::cout << "\b\n";
-
-	//IntLinearList<int> ls;
-	//ls.PushBack(2);
-	//ls.PushBack(4);
-	//ls.PushBack(6);
-	//ls.PushBack(8);
-	//ls.PushBack(10);
-	//ls.PushBack(12);
-	//ls.PushBack(14);
-	//ls.PushBack(16);
-	//ls.PushBack(18);
-	//ls.PushBack(20);
-
-	//std::cout << ls.Size() << "\n";
-
-	//for (int i = 0; i < ls.Size(); ++i)
-	//{
-	//	std::cout << ls[i] << " ";
-	//}
-	//std::cout << "\n";
-
-	//ls.PushOrder(13);
-
-	//for (int i = 0; i < ls.Size(); ++i)
-	//{
-	//	std::cout << ls[i] << " ";
-	//}
-	//std::cout << "\n";
 
 	return 0;
+}
+
+void globalSetup() {
+	srand(time(NULL));
 }

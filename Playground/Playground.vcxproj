@@ -130,19 +130,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Date.cpp" />
+    <ClCompile Include="Helper\DataTypes.cpp" />
+    <ClCompile Include="Helper\Date.cpp" />
     <ClCompile Include="Playground.cpp" />
-    <ClCompile Include="Student.cpp" />
+    <ClCompile Include="Objects\Student.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\AVL_Tree.h" />
-    <ClInclude Include="Date.h" />
+    <ClInclude Include="Helper\DataTypes.h" />
     <ClInclude Include="DataStructures\HashMap.h" />
     <ClInclude Include="DataStructures\LinearList.h" />
     <ClInclude Include="DataStructures\LinkedList.h" />
     <ClInclude Include="DataStructures\DoubleLinkedList.h" />
     <ClInclude Include="DataStructures\Stack.h" />
-    <ClInclude Include="Student.h" />
+    <ClInclude Include="Helper\Date.h" />
+    <ClInclude Include="Helper\Helper.h" />
+    <ClInclude Include="Functions\rndlib.hpp" />
+    <ClInclude Include="Objects\Student.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="query.sql" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
